@@ -1,17 +1,60 @@
-import React, { useState } from 'react'
-import TripList from './components/TripList'
+import "./App.css";
+import React, { useState } from "react";
+import Title from "./components/Title.jsx";
+import Modal from "./components/Modal.jsx";
+import EventList from "./components/EventList.jsx";
+import NewEventForm from "./components/NewEventForm.jsx";
 
-export default function App() {
-  const [hide, setHide] = useState(true)
+function App() {
+  const [showModal, setShowModal] = useState(false);
+  const [showEvents, setShowEvents] = useState(true);
+  const [events, setEvents] = useState([]);
+
+  const addEvent = (event) => {
+    setEvents((prevEvents) => {
+      return [...prevEvents, event];
+    });
+
+    setShowModal(false)
+  };
+
+  const handleClick = (id) => {
+    setEvents((prevEvents) => {
+      return prevEvents.filter((event) => id !== event.id);
+    });
+  };
+
+
+
+  const subtitle = "All the latest events in Marioland";
+
   return (
+    <div className="App">
+      <Title title="Marioland Events" subtitle={subtitle} />
 
-    <div>
-      <button onClick={()=>{
-        setHide((prev) => !prev)
-      }}> Hide</button>
-     { hide && <TripList />}
+      {showEvents && (
+        <div>
+          <button onClick={() => setShowEvents(false)}>Hide Events</button>
+        </div>
+      )}
+      {!showEvents && (
+        <div>
+          <button onClick={() => setShowEvents(true)}>Show Events</button>
+        </div>
+      )}
+      {showEvents && <EventList events={events} handleClick={handleClick} />}
 
+      {showModal && (
+        <Modal  isSalesModal={true}>
+          <NewEventForm addEvent={addEvent} />
+        </Modal>
+      )}
 
+      <div>
+        <button onClick={() => setShowModal(true)}>Add New Event</button>
+      </div>
     </div>
-  )
+  );
 }
+
+export default App;
